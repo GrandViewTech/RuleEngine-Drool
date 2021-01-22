@@ -1,0 +1,34 @@
+import com.gvt.ruleengine.drool.*
+import java.util.ArrayList;
+
+global java.util.List eventData
+
+salience 1
+rule "Declaring Master Data"
+when
+    eval( true )
+then
+    eventData.add( "Event.New" );
+    System.out.println("Set Up event Data");
+end
+rule "Validate Report Type of Message"
+  salience 1
+  when
+  $validation : Validation ( !fpmlMessage.reportType.equals("nonpublicExecutionReport") )
+  then
+  System.out.println("Invalid Report Type - [ MessageId : "+$validation.fpmlMessage.messageId+" | ReportType : "+ $validation.fpmlMessage.reportType+" ]");
+end
+rule "Validate Event Type of Message"
+  salience 2
+  when
+  $validation : Validation (  fpmlMessage.eventType not in ("Event.New","Event.Exit","Event.Correction") )
+  then
+  System.out.println("Invalid Event Type - [ MessageId : "+$validation.fpmlMessage.messageId+" | ReportType : "+ $validation.fpmlMessage.eventType+" ]");
+end
+rule "Validate Xpath of Message"
+  salience 3
+  when
+  $validation : Validation (  fpmlMessage.eventType not in $eventData )
+  then
+  System.out.println("Invalid Xpath  - [ MessageId : "+$validation.fpmlMessage.messageId+" | ReportType : "+ $validation.fpmlMessage.eventType+" ]");
+end

@@ -1,0 +1,22 @@
+import com.gvt.ruleengine.drool.Server
+rule "Check Server Configuration"
+  when
+  $server : Server( processors < 2 || memory<=1024 || diskspace <= 2048)
+  then
+  $server.setValid(false);
+  System.out.println("Server "+ $server.getName() + " configuration does not meet requirements!");
+end
+rule "Check Server Configuration"
+  when
+  $server : Server( name contains "windows")
+  then
+  $server.setValid(false);
+  System.out.println("Server "+ $server.getName() + " Invalid Server Name !");
+end
+rule "Validate ProductType of Message"
+  when
+  $message : Message( name contains "windows")
+  then
+  $server.setValid(false);
+  System.out.println("Server "+ $server.getName() + " Invalid Server Name !");
+end
